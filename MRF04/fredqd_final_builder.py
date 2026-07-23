@@ -1,44 +1,4 @@
-"""
-═══════════════════════════════════════════════════════════════════════
-  FRED-QD  →  Final MRF-Ready Dataset
-  Goulet Coulombe (2024) — "The Macroeconomy as a Random Forest"
-═══════════════════════════════════════════════════════════════════════
 
-INPUT : fredqd_St_final.xlsx  (St_full + Targets sheets)
-OUTPUT: fredqd_final_model_ready.csv   ← single flat file, all cols
-        fredqd_final_model_ready.xlsx  ← same, Excel with 3 sheets
-
-WHAT THIS SCRIPT DOES
-─────────────────────
-1. Load St_full (1271 cols) + Targets (25 cols) — already built
-2. Fix date index  → proper 'observation_date' column (YYYY-MM-DD)
-   AND a 'quarter' column (YYYYQq) for human readability
-3. Handle missing values (two separate strategies):
-   a. Leading NaNs  (series not yet available)  → column-mean fill
-   b. Trailing NaN at 2025Q3 (38 cols)          → forward-fill (last value)
-4. Add y_t lags for each of 5 target variables (8 lags each = 40 cols)
-   These complete the S_t per Table 1: "Eight lags of y_t"
-5. Add 'sample_flag' column: 'train' / 'oos' / 'post_oos'
-6. Merge St with Targets on common index
-7. Write final clean CSVs and Excel sheets
-
-FINAL DATASET COLUMNS
-─────────────────────
-  observation_date   YYYY-MM-DD  (first day of quarter)
-  quarter            YYYYQq string
-  sample_flag        train | oos | post_oos
-  trend_t            integer time trend (1, 2, 3, …)
-  [245 raw series]   transformed FRED-QD predictors
-  [490 raw lags]     L1 and L2 of each raw series
-  [5 factors]        F1–F5 PCA cross-sectional factors
-  [40 factor lags]   F1_L1 … F5_L8
-  [490 MAFs]         series_MAF1 and series_MAF2 for each series
-  [40 y_t lags]      GDP_yL1…GDP_yL8, UR_yL1…SPREAD_yL8
-  [25 targets]       GDP_h1…SPREAD_h8
-
-TOTAL: ~1,336 columns ready for MRF / AR(4) / any model
-═══════════════════════════════════════════════════════════════════════
-"""
 
 import numpy as np
 import pandas as pd
