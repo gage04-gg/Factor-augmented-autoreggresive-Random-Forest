@@ -1,0 +1,3 @@
+OOS: 2003Q1-2014Q4
+   h     AR_RMSE    MRF_RMSE     ratio   DM_stat     DM_p
+   1    0.006799    0.007830    1.1516    +0.277   0.6084
